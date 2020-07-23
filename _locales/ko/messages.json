@@ -1,0 +1,6 @@
+{
+    "extName": {
+        "message": "안녕 세상",
+        "description": "locale 테스트 문구 / chrome.i18n.getMessage('extName')으로 조회가능"
+    }
+}

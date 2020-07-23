@@ -1,0 +1,106 @@
+:root {
+    --blue: #007bff;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #6c757d;
+    --gray-dark: #343a40;
+    --primary: #a349a4;
+    --secondary: #00a2e8;;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --font-family-sans-serif: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
+body {
+    background-color: #fff;
+    font-weight: 400;
+    line-height: 1.65;
+    padding-top: 75px;
+    margin: 0;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+}
+
+article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
+    display: block;
+}
+div {
+    display: block;
+}
+
+.navbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    padding: .5rem 1rem;
+    background: #fff!important;
+    box-shadow: 0 0.125rem 0.25rem 0 rgba(0,0,0,.11);
+}
+
+.fixed-bottom, .fixed-top {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+.fixed-top {
+    top: 0;
+}
+
+
+.read-container {
+    font-family: 'ffNoto';
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.read-container::selection {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn {
+    border: 0px;
+    padding: 5px 10px 5px 10px;
+}
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: var(--secondary);
+}
+.btn-bookmark svg path{
+    fill: var(--primary);
+}
+.btn-bookmark:hover svg path{
+    fill: var(--secondary);
+}
+.btn-bookmark-list svg path{
+    fill: var(--primary);
+}
+.btn-bookmark-list:hover svg path{
+    fill: var(--secondary);
+}
