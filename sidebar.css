@@ -109,3 +109,9 @@ div {
 .btn-bookmark-list:hover svg path{
     fill: var(--secondary);
 }
+
+.file-title {
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

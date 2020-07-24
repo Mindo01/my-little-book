@@ -92,37 +92,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 북마크 이름이 입력되지 않았다면, 현재 시간으로 저장
         if (!title) {
-            console.log('북마크 이름 안받았어');
             var now = new Date();
             var timestamp = now.format("yyyy_MM_dd__HH:mm:ss");
-            console.log(timestamp);
             title = timestamp;
         }
 
         // 현재 스크롤 위치 확인
         var intY = document.body.scrollTop;
-        console.log(intY);
 
-        // 북마크이름과 스크롤 위치 key-value 구성
-        var save = {};
-        save[_tmpFile.name] = {};
-        save[_tmpFile.name][title] = intY;
-        console.log(save);
-
-        // TODO: 스크롤 위치 저장
+        // 스크롤 위치 저장
         // whale.storage 사용 (참고:https://developer.chrome.com/extensions/storage)
         // set : whale.storage.sync.set({key:value}, function() { /* value */ })
         // get : whale.storage.sync.get(['key'], function(result){ /* result.key */})
         // 또는 local일 경우 whale.storage.local.set/get
         // onchange : whale.storage.onChanged.addListener(function(changes, namespace) { /* changes['key'] changes['key'].oldValue/newValue */})
+
         // 기존에 저장된 해당 파일의 북마크 조회
         whale.storage.sync.get([_tmpFile.name], function(result) {
-            console.log(result);
             // 기존에 저장된 값에 추가해서 저장
             var newValue = result[_tmpFile.name];
             if (!newValue) {
                 newValue = {};
             }
+            // 북마크이름과 스크롤 위치 key-value 구성
             newValue[title] = intY;
 
             // 새로운 값 저장
