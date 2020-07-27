@@ -130,9 +130,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // TODO: 북마크 목록 전체 비우기 버튼 추가
     // TODO: 북마크 목록 중 개별 삭제
     document.getElementById('bookmarkList').addEventListener('click', function() {
-        console.log(tmpFile);
+        console.log(_tmpFile);
 
-        // TODO: 현재 파일(_tmpFile)로 localStorage에 저장된 목록 중 해당 파일의 북마크 목록만 불러오기
+        // 현재 파일(_tmpFile)로 localStorage에 저장된 목록 중 해당 파일의 북마크 목록만 불러오기
+        whale.storage.sync.get([_tmpFile.name], function(result) {
+            var bookMarkList = result[_tmpFile.name];
+
+            // 북마크 목록 표시
+            
+        });
 
         // TODO: 팝업화면/또는 화면전환/또는 사이드바로 북마크 목록 표시
         // TODO: 단, 필터로 처리해서 전체 북마크 목록 불러오는 형식 / 필터를 변경하면 전체 목록도 볼 수 있도록
