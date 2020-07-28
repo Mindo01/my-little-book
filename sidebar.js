@@ -73,12 +73,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // 파일 열기 버튼
     var fileOpener = document.getElementById('fileOpener');
     fileOpener.addEventListener('click', function() {
+        closeBookmarkBox();
         // 파일 열기
         openTextFile();
     });
 
     // 북마크 버튼
-    document.getElementById('bookmark').addEventListener('click', function() {
+    document.getElementById('btnBookmark').addEventListener('click', function() {
         // 파일 열린 상태인지 확인
         if (!_tmpFile) {
             // TODO: 자체 토스트창으로 표시하기
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 북마크 이름 받기
         // TODO: 자체 팝업창에서 받아오기
         var title = prompt("북마크 이름");
+        if (title === null) return; // 취소
 
         // 북마크 이름이 입력되지 않았다면, 현재 시간으로 저장
         if (!title) {
@@ -119,36 +121,154 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 새로운 값 저장
             whale.storage.sync.set({ [_tmpFile.name]:newValue }, function() {
-                console.log('설정완료');
             });
         });
         
     });
 
     // 북마크 목록 확인
-    // TODO: 북마크 목록 중 클릭하면 해당 스크롤 위치로 이동
+    // - 북마크 목록 중 클릭하면 해당 스크롤 위치로 이동
     // TODO: 북마크 목록 전체 비우기 버튼 추가
-    // TODO: 북마크 목록 중 개별 삭제
-    document.getElementById('bookmarkList').addEventListener('click', function() {
-        console.log(_tmpFile);
+    // - 북마크 목록 중 개별 삭제
+    document.getElementById('btnBookmarkList').addEventListener('click', function() {
+        // 북마크 열려있는 상태일 경우 닫고 종료
+        if (isBookmarkBoxOpen())
+        {
+            closeBookmarkBox();
+            return;
+        }
+
+        // 파일 열린 상태인지 확인
+        if (!_tmpFile) {
+            // TODO: 자체 토스트창으로 표시하기
+            alert('열린 파일이 없습니다!');
+            return;
+        }
 
         // 현재 파일(_tmpFile)로 localStorage에 저장된 목록 중 해당 파일의 북마크 목록만 불러오기
-        whale.storage.sync.get([_tmpFile.name], function(result) {
-            var bookMarkList = result[_tmpFile.name];
+        refreshBookmarkList(_tmpFile.name);
 
-            // 북마크 목록 표시
-            
-        });
-
-        // TODO: 팝업화면/또는 화면전환/또는 사이드바로 북마크 목록 표시
         // TODO: 단, 필터로 처리해서 전체 북마크 목록 불러오는 형식 / 필터를 변경하면 전체 목록도 볼 수 있도록
 
     });
 
-    // TODO: 단축키 기능
+    // 북마크 선택 이벤트
+    document.getElementById('bookmarkList').addEventListener('click', function(evt) {
+        var mark = evt.target;
+        var scrollY = mark.getAttribute('data-scroll');
+        // 스크롤 위치 이동
+        document.body.scrollTop = scrollY;
+    });
+
+    // 북마크 삭제 이벤트 : 북마크 우클릭
+    document.getElementById('bookmarkList').addEventListener('contextmenu', function(evt) {
+        evt.preventDefault();
+        var mark = evt.target.getAttribute('data-mark');
+        // 북마크 삭제
+        deleteBookmark(_tmpFile.name, mark);
+        return false;
+    }, false);
+
+    // 메인에 포커스가면 북마크 닫기
+    document.getElementById('output').addEventListener('click', function() {
+        closeBookmarkBox();
+    });
+
+    // 북마크 닫기 버튼
+    document.getElementById('btnBookmarkClose').addEventListener('click', function() {
+        closeBookmarkBox();
+    });
+
+    // 페이지 이동 방향키 바인드
+    window.onkeyup = function(evt) {
+        // 좌/우 페이지 이동
+        if (evt.key == "ArrowLeft") {
+            // TODO: 페이지 위로
+            console.log('page up');
+        }
+        else if (evt.key == "ArrowRight") {
+            // TODO: 페이지 아래로
+            console.log('page down');
+        }
+    };
+
     // TODO: 검색 기능
+
     // TODO: 스크롤 페이지 입력해서 이동 기능
+
 });
 
+/**
+ * 북마크 새로고침
+ * @param {string}} fileName 
+ */
+function refreshBookmarkList(fileName) {
+    whale.storage.sync.get([fileName], function(result) {
+        var bookmarkList = result[fileName];
+        if (!bookmarkList) {
+            bookmarkList = {};
+        }
+        
+        var bookmarkTag = document.querySelector('#bookmarkList');
+        bookmarkTag.innerHTML = "";
+        // 북마크 목록 생성
+        Object.keys(bookmarkList).forEach(key => {
+            var bookmark = document.createElement('li');
+            bookmark.setAttribute("class", "cursor-click font-hover");
+            bookmark.setAttribute("data-mark", key);
+            bookmark.setAttribute("data-scroll", bookmarkList[key]);
+            bookmark.innerText = key;
+            bookmarkTag.appendChild(bookmark);
+        });
+        
+        // 사이드바로 북마크 목록 표시
+        openBookmarkBox();
+    });
+}
+
+/**
+ * 북마크 개별 삭제
+ * @param {string} fileName 북마크 저장된 파일명
+ * @param {string} key 북마크키
+ */
+function deleteBookmark(fileName, key) {
+    whale.storage.sync.get([fileName], function(result) {
+        // 기존에 저장된 값에 추가해서 저장
+        var updateValue = result[fileName];
+        if (!updateValue) {
+            updateValue = {};
+        }
+        // 선택한 북마크 삭제
+        delete updateValue[key];
+
+        // 새로운 값 저장
+        whale.storage.sync.set({ [fileName]:updateValue }, function() {
+            // 저장 완료, 북마크 새로고침
+            refreshBookmarkList(fileName);
+        });
+    });
+}
+
+/**
+ * Bookmark 상태 확인
+ */
+function isBookmarkBoxOpen() {
+    return document.getElementById("bookmarkBox").style.width == "300px";
+}
+
+/**
+ * BookmarkBox 열기
+ */
+function openBookmarkBox() {
+    document.getElementById("bookmarkBox").style.width = "300px";
+}
+
+// TODO: Sidebarapp 닫힐 때 bookmarkbox도 닫기
+/**
+ * BookmarkBox 닫기
+ */
+function closeBookmarkBox() {
+    document.getElementById("bookmarkBox").style.width = "0px";
+}
 
 

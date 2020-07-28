@@ -36,6 +36,17 @@
     "permissions": [
         "storage"
     ],
-    "content_security_policy": "script-src 'self'; object-src 'self'"
+    "content_security_policy": "script-src 'self'; object-src 'self'",
+
+    "commands": {
+        "_execute_sidebar_action" :{
+            "suggested_key": {
+                "default": "Ctrl+Shift+Z",
+                "windows": "Ctrl+Shift+Z",
+                "mac": "Ctrl+Shift+Z"
+            },
+            "description": "Hide App"
+        }
+    }
   }
   

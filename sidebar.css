@@ -41,6 +41,15 @@ body {
     text-align: left;
 }
 
+.no-drag {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
     display: block;
 }
@@ -59,6 +68,31 @@ div {
     box-shadow: 0 0.125rem 0.25rem 0 rgba(0,0,0,.11);
 }
 
+.bookmark-box {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: white;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding: 30 0 20 0;
+    border-left: 1px solid #c3c3c3;
+}
+.bookmark-title {
+    display: block;
+    padding-left: 10px;
+    transition: 0.3s;
+}
+.bookmark-content {
+    display: block;
+    padding-left: 10px;
+    padding-right: 5px;
+    transition: 0.3s;
+}
+
 .fixed-bottom, .fixed-top {
     position: fixed;
     right: 0;
@@ -74,6 +108,27 @@ div {
     padding-right: 1rem;
 }
 
+.h1 { font-size: 2em; }
+.h2 { font-size: 1.5em; }
+.h3 { font-size: 1.17em; }
+.h4 { font-size: 1em; }
+.h5 { font-size: 0.83em; }
+.font-bold { font-weight: bold; }
+.font-primary {
+    color: var(--primary);
+}
+.font-secondary {
+    color: var(--secondary);
+}
+.cursor-click {
+    cursor: pointer;
+}
+.font-hover:hover {
+    color: var(--secondary);
+}
+.tag-hover:hover {
+    background-color: var(--secondary);
+}
 
 .read-container {
     font-family: 'ffNoto';

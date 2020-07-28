@@ -27,13 +27,3 @@ window.addEventListener(`drop`, (evt = event) => {
 //     color: `#ff0000`  //  RGBA 색상값 배열([255, 0, 0, 255]) 혹은 HEX 색상 표현 문자열(#FF0000).
 // });
 
-chrome.runtime.onMessage.addListener(function(msg) {
-    if (msg.action == 'browse'){
-        openTextFile();
-    } else if (msg.action == 'test'){
-        var output = document.getElementById('output');
-        if (output) {
-            output.innerHTML = 'hi'
-        }
-    }
-});

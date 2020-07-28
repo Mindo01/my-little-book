@@ -14,17 +14,25 @@
                 <!-- TEST PDF Viewer -->
                 <!-- <a href="test/testPdf.html">test</a> -->
             </div>
-            <div class="fixed-right">
-                <span class="btn-bookmark" id="bookmark" title="북마크 저장">
+            <div class="fixed-right no-drag">
+                <span class="btn-bookmark" id="btnBookmark" title="북마크 저장">
                     <svg aria-hidden="true" height="27px" focusable="false" data-prefix="fas" data-icon="bookmark" class="svg-inline--fa fa-bookmark fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M0 512V48C0 21.49 21.49 0 48 0h288c26.51 0 48 21.49 48 48v464L192 400 0 512z"></path></svg>
                 </span>
                 &nbsp;
-                <span class="btn-bookmark-list" id="bookmarkList" title="북마크 목록 확인">
+                <span class="btn-bookmark-list" id="btnBookmarkList" title="북마크 목록 확인">
                     <svg aria-hidden="true" height="27px" focusable="false" data-prefix="fas" data-icon="list" class="svg-inline--fa fa-list fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M80 368H16a16 16 0 0 0-16 16v64a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-64a16 16 0 0 0-16-16zm0-320H16A16 16 0 0 0 0 64v64a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16V64a16 16 0 0 0-16-16zm0 160H16a16 16 0 0 0-16 16v64a16 16 0 0 0 16 16h64a16 16 0 0 0 16-16v-64a16 16 0 0 0-16-16zm416 176H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16zm0-320H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16zm0 160H176a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h320a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16z"></path></svg>
                 </span>
             </div>
         </nav>
-        
+        <div id="bookmarkBox" class="bookmark-box">
+            <div class="bookmark-title no-drag">
+                <h3 class="font-primary"> 북마크 <span id="btnBookmarkClose" class="font-bold cursor-click font-hover">X</span></h3>
+            </div>
+            <div class="bookmark-content">
+                <ul id="bookmarkList" class="font-primary">
+                </ul>
+            </div>
+        </div>
         <div class="container">
             <div id="output" class="read-container">
                 ...
