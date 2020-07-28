@@ -194,6 +194,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // 프롬프트 버튼 이벤트
+    document.getElementById("promptOk").addEventListener('click', function() {
+        // 확인
+        closePrompt();
+    });
+    document.getElementById("promptCancel").addEventListener('click', function() {
+        document.getElementById('promptIsCancel').value = null;
+    });
+
     // TODO: 검색 기능 window.find()?
 
     // TODO: 스크롤 페이지 입력해서 이동 기능
@@ -290,6 +299,24 @@ function showMessage(msg) {
   
     // 3
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
-  }
+}
 
+/**
+ * show prompt msg
+ * @param {string} msg 
+ */
+function promptMessage(msg) {
+    // Get the prompt DIV
+    var x = document.getElementById("prompt");
+    document.getElementById('promptMsg').innerText = msg;
+    document.getElementById('promptInput').value = ""; // 초기화
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+}
+
+function closePrompt() {
+    var x = document.getElementById("prompt");
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
+}
 
