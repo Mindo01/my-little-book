@@ -181,14 +181,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 페이지 이동 방향키 바인드
     window.onkeyup = function(evt) {
-        // 좌/우 페이지 이동
+        // 좌/우 키로 페이지 이동
         if (evt.key == "ArrowLeft") {
-            // TODO: 페이지 위로
-            console.log('page up');
+            // page up
+            event.preventDefault();
+            // 스크롤 위치 위 페이지로 (window height - header height - 여백)
+            document.body.scrollTop = document.body.scrollTop - (document.body.clientHeight - document.getElementById('navbar_main').clientHeight - 10);
         }
         else if (evt.key == "ArrowRight") {
-            // TODO: 페이지 아래로
-            console.log('page down');
+            // page down
+            event.preventDefault();
+            // 스크롤 위치 아래 페이지로 (window height - header height - 여백)
+            document.body.scrollTop = document.body.scrollTop + (document.body.clientHeight - document.getElementById('navbar_main').clientHeight - 10);
         }
     };
 
