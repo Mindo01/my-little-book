@@ -82,8 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btnBookmark').addEventListener('click', function() {
         // 파일 열린 상태인지 확인
         if (!_tmpFile) {
-            // TODO: 자체 토스트창으로 표시하기
-            alert('열린 파일이 없습니다!');
+            showMessage('열린 파일이 없습니다.');
             return;
         }
 
@@ -140,8 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 파일 열린 상태인지 확인
         if (!_tmpFile) {
-            // TODO: 자체 토스트창으로 표시하기
-            alert('열린 파일이 없습니다!');
+            showMessage('열린 파일이 없습니다.');
             return;
         }
 
@@ -196,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // TODO: 검색 기능
+    // TODO: 검색 기능 window.find()?
 
     // TODO: 스크롤 페이지 입력해서 이동 기능
 
@@ -222,6 +220,9 @@ function refreshBookmarkList(fileName) {
             bookmark.setAttribute("data-mark", key);
             bookmark.setAttribute("data-scroll", bookmarkList[key]);
             bookmark.innerText = key;
+            // 닫기 버튼
+            var close = document.createElement('span');
+            close.set
             bookmarkTag.appendChild(bookmark);
         });
         
@@ -274,5 +275,21 @@ function openBookmarkBox() {
 function closeBookmarkBox() {
     document.getElementById("bookmarkBox").style.width = "0px";
 }
+
+/**
+ * show snackbar toast
+ * @param {string} msg 
+ */
+function showMessage(msg) {
+    // Get the snackbar DIV
+    var x = document.getElementById("snackbar");
+    x.innerText = msg;
+  
+    // Add the "show" class to DIV
+    x.className = "show";
+  
+    // 3
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
+  }
 
 
