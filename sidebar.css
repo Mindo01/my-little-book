@@ -10,6 +10,7 @@
     --teal: #20c997;
     --cyan: #17a2b8;
     --white: #fff;
+    --lightgray: #909294;
     --gray: #6c757d;
     --gray-dark: #343a40;
     --primary: #a349a4;
@@ -106,16 +107,22 @@ div {
     position: fixed; /* Sit on top of the screen */
     z-index: 1; /* Add a z-index if needed */
     left: 50%; /* Center the snackbar */
-    top: 30px; /* 30px from the bottom */
+    bottom: 30px; /* 30px from the top */
 }
-
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
 #prompt.show {
     visibility: visible; /* Show the snackbar */
     /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
     However, delay the fade out process for 1 seconds */
-    -webkit-animation: fadein 0.3s, fadeout 0.3s 1.3s;
-    animation: fadein 0.3s, fadeout 0.3s 1.3s;
+    -webkit-animation: fadein 0.5s;
+    animation: fadein 0.5s;
+}
+#prompt.hide {
+    visibility: visible; /* Show the snackbar */
+    /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+    However, delay the fade out process for 1 seconds */
+    -webkit-animation: fadeout 0.5s 0.3s;
+    animation: fadeout 0.5s 0.3s;
 }
 
 /* snackbar */
@@ -133,7 +140,6 @@ div {
     left: 50%; /* Center the snackbar */
     bottom: 30px; /* 30px from the bottom */
 }
-
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
 #snackbar.show {
     visibility: visible; /* Show the snackbar */
@@ -148,17 +154,14 @@ div {
     from {bottom: 0; opacity: 0;}
     to {bottom: 30px; opacity: 1;}
 }
-
 @keyframes fadein {
     from {bottom: 0; opacity: 0;}
     to {bottom: 30px; opacity: 1;}
 }
-
 @-webkit-keyframes fadeout {
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
 }
-
 @keyframes fadeout {
     from {bottom: 30px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
@@ -187,6 +190,9 @@ div {
 .h4 { font-size: 1em; }
 .h5 { font-size: 0.83em; }
 .font-bold { font-weight: bold; }
+.font-black {
+    color: var(--dark);
+}
 .font-primary {
     color: var(--primary);
 }
@@ -225,6 +231,13 @@ div {
 .btn-primary:hover {
     background-color: var(--secondary);
 }
+.btn-gray {
+    background-color: var(--gray);
+    color: white;
+}
+.btn-gray:hover {
+    background-color: var(--lightgray);
+}
 .btn-bookmark svg path{
     fill: var(--primary);
 }
@@ -242,4 +255,17 @@ div {
     width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.ul0 {
+    list-style-type: none;
+    padding: 0;
+    border: 1px solid #ddd;
+}
+.ul0 li {
+    padding: 8px 16px;
+    border-bottom: 1px solid #ddd;
+}
+.ul0 li:last-child {
+    border-bottom: none
 }

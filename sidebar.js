@@ -87,39 +87,49 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // 북마크 이름 받기
-        // TODO: 자체 팝업창에서 받아오기
-        var title = prompt("북마크 이름");
-        if (title === null) return; // 취소
+        promptMessage("북마크 이름", function(title) {
+            if (title === null) return; // 취소
 
-        // 북마크 이름이 입력되지 않았다면, 현재 시간으로 저장
-        if (!title) {
-            var now = new Date();
-            var timestamp = now.format("yyyy_MM_dd__HH:mm:ss");
-            title = timestamp;
-        }
-
-        // 현재 스크롤 위치 확인
-        var intY = document.body.scrollTop;
-
-        // 스크롤 위치 저장
-        // whale.storage 사용 (참고:https://developer.chrome.com/extensions/storage)
-        // set : whale.storage.sync.set({key:value}, function() { /* value */ })
-        // get : whale.storage.sync.get(['key'], function(result){ /* result.key */})
-        // 또는 local일 경우 whale.storage.local.set/get
-        // onchange : whale.storage.onChanged.addListener(function(changes, namespace) { /* changes['key'] changes['key'].oldValue/newValue */})
-
-        // 기존에 저장된 해당 파일의 북마크 조회
-        whale.storage.sync.get([_tmpFile.name], function(result) {
-            // 기존에 저장된 값에 추가해서 저장
-            var newValue = result[_tmpFile.name];
-            if (!newValue) {
-                newValue = {};
+            // 북마크 이름이 입력되지 않았다면, 현재 시간으로 저장
+            if (!title) {
+                var now = new Date();
+                var timestamp = now.format("yyyy_MM_dd__HH:mm:ss");
+                title = timestamp;
             }
-            // 북마크이름과 스크롤 위치 key-value 구성
-            newValue[title] = intY;
 
-            // 새로운 값 저장
-            whale.storage.sync.set({ [_tmpFile.name]:newValue }, function() {
+            // 현재 스크롤 위치 확인
+            var intY = document.body.scrollTop;
+
+            // 스크롤 위치 저장
+            // whale.storage 사용 (참고:https://developer.chrome.com/extensions/storage)
+            // set : whale.storage.sync.set({key:value}, function() { /* value */ })
+            // get : whale.storage.sync.get(['key'], function(result){ /* result.key */})
+            // 또는 local일 경우 whale.storage.local.set/get
+            // onchange : whale.storage.onChanged.addListener(function(changes, namespace) { /* changes['key'] changes['key'].oldValue/newValue */})
+
+            // 기존에 저장된 해당 파일의 북마크 조회
+            whale.storage.sync.get([_tmpFile.name], function(result) {
+                // 기존에 저장된 값에 추가해서 저장
+                var newValue = result[_tmpFile.name];
+                if (!newValue) {
+                    newValue = {};
+                } else {
+                    // TODO: 기존 키와 겹치면 덮어쓰기 확인/취소 띄우기
+                    // TODO: 커스텀 confirm 창 구성 필요
+                    // 이미 존재하는 북마크이름일 경우 알림
+                    if (newValue[title] != undefined) {
+                        showMessage('이미 있는 북마크이름입니다');
+                        return;
+                    }
+                }
+                // 북마크이름과 스크롤 위치 key-value 구성
+                newValue[title] = intY;
+
+                // 새로운 값 저장
+                whale.storage.sync.set({ [_tmpFile.name]:newValue }, function() {
+                    // 북마크목록 새로고침
+                    refreshBookmarkList(_tmpFile.name);
+                });
             });
         });
         
@@ -167,12 +177,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
     }, false);
 
-    // 메인에 포커스가면 북마크 닫기
+    // 메인에 포커스가면 북마크목록 닫기
     document.getElementById('output').addEventListener('click', function() {
         closeBookmarkBox();
     });
 
-    // 북마크 닫기 버튼
+    // 북마크목록 닫기 버튼
     document.getElementById('btnBookmarkClose').addEventListener('click', function() {
         closeBookmarkBox();
     });
@@ -193,15 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.scrollTop = document.body.scrollTop + (document.body.clientHeight - document.getElementById('navbar_main').clientHeight - 10);
         }
     };
-
-    // 프롬프트 버튼 이벤트
-    document.getElementById("promptOk").addEventListener('click', function() {
-        // 확인
-        closePrompt();
-    });
-    document.getElementById("promptCancel").addEventListener('click', function() {
-        document.getElementById('promptIsCancel').value = null;
-    });
 
     // TODO: 검색 기능 window.find()?
 
@@ -231,7 +232,10 @@ function refreshBookmarkList(fileName) {
             bookmark.innerText = key;
             // 닫기 버튼
             var close = document.createElement('span');
-            close.set
+            close.setAttribute("class", "fixed-right");
+            close.setAttribute("data-mark", key);
+            close.innerText = "X";
+            bookmark.appendChild(close);
             bookmarkTag.appendChild(bookmark);
         });
         
@@ -274,7 +278,11 @@ function isBookmarkBoxOpen() {
  * BookmarkBox 열기
  */
 function openBookmarkBox() {
+    // FIXME: 열 때 북마크별 닫기 버튼이 먼저 떠
+    document.getElementById("bookmarkBox").style.display = "block";
     document.getElementById("bookmarkBox").style.width = "300px";
+    // setTimeout(function(){ document.getElementById("bookmarkBox").style.width = "300px"; }, 500);
+    // setTimeout(function(){ document.getElementById("bookmarkBox").style.display = "block"; }, 100);
 }
 
 // TODO: Sidebarapp 닫힐 때 bookmarkbox도 닫기
@@ -282,7 +290,10 @@ function openBookmarkBox() {
  * BookmarkBox 닫기
  */
 function closeBookmarkBox() {
+    // FIXME: 닫을 때 북마크별 닫기 버튼이 늦게 사라져
     document.getElementById("bookmarkBox").style.width = "0px";
+    // document.getElementById("bookmarkBox").style.display = "none";
+    setTimeout(function(){ document.getElementById("bookmarkBox").style.display = "none"; }, 400);
 }
 
 /**
@@ -305,7 +316,11 @@ function showMessage(msg) {
  * show prompt msg
  * @param {string} msg 
  */
-function promptMessage(msg) {
+function promptMessage(msg, callback) {
+    // 기존 버튼 클릭 이벤트 해제
+    document.getElementById("promptOk").removeEventListener('click', clickPromptOk);
+    document.getElementById("promptCancel").removeEventListener('click', clickPromptCancel);
+
     // Get the prompt DIV
     var x = document.getElementById("prompt");
     document.getElementById('promptMsg').innerText = msg;
@@ -313,10 +328,55 @@ function promptMessage(msg) {
   
     // Add the "show" class to DIV
     x.className = "show";
-}
 
+    // 입력칸에 포커스
+    document.getElementById('promptMsg').focus();
+
+    // 프롬프트 버튼 이벤트
+    document.getElementById("promptOk").addEventListener('click', function() {
+        clickPromptOk(callback);
+    });
+    document.getElementById("promptCancel").addEventListener('click', function() {
+        clickPromptCancel(callback);
+    });
+}
+/**
+ * 프롬프트 확인 이벤트 핸들러
+ */
+function clickPromptOk(callback) {
+    closePrompt();
+    if(typeof callback != 'undefined' && callback){
+        if(typeof callback == 'function'){
+            callback(document.getElementById('promptInput').value);
+        } else {
+            if( callback ) {
+                eval( callback );
+            }
+        }
+    }
+}
+/**
+ * 프롬프트 취소 이벤트 핸들러
+ */
+function clickPromptCancel(callback) {
+    closePrompt();
+    if(typeof callback != 'undefined' && callback){
+        if(typeof callback == 'function'){
+            callback(null); // 취소일 경우 null 반환
+        } else {
+            if( callback ) {
+                eval( callback );
+            }
+        }
+    }
+}
+/**
+ * 프롬프트 닫기
+ */
 function closePrompt() {
     var x = document.getElementById("prompt");
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
+    // Add the "show" class to DIV
+    x.className = x.className.replace("show", "hide");
+    setTimeout(function(){ x.className = x.className.replace("hide", ""); }, 500);
 }
 

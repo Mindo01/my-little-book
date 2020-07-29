@@ -29,7 +29,7 @@
                 <h3 class="font-primary"> 북마크 <span id="btnBookmarkClose" class="font-bold cursor-click font-hover">X</span></h3>
             </div>
             <div class="bookmark-content">
-                <ul id="bookmarkList" class="font-primary">
+                <ul id="bookmarkList" class="ul0 font-black">
                 </ul>
             </div>
         </div>
@@ -39,11 +39,15 @@
             </div>
         </div>
         <div id="prompt">
-            <span id="promptMsg"></span>
-            <input id="promptInput" type="text"/>
-            <input id="promptIsCancel" type="hidden"/>
-            <input id="promptOk" type="button" value="OK"/>
-            <input id="promptCancel" type="button" value="Cancel"/>
+            <div id="promptMsg"></div>
+            <div>
+                <input id="promptInput" type="text"/>
+            </div>
+            <div>
+                <input id="promptIsCancel" type="hidden"/>
+                <input id="promptOk" class="btn btn-primary" type="button" value="OK"/>
+                <input id="promptCancel" class="btn btn-gray" type="button" value="Cancel"/>
+            </div>
         </div>
         <div id="snackbar"></div>
     </body>
