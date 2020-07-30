@@ -172,6 +172,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.scrollTop = scrollY;
     });
 
+    // 북마크 전체 삭제
+    document.getElementById('btnClearBookmark').addEventListener('click', function() {
+        // 전체 삭제 확인 창
+        confirmMessage('정말 삭제할까요?', function(doDelete) {
+            if (!doDelete) return;
+            // 현재 파일에 있는 북마크 전체 삭제 (bookmark 키에 null값 전달)
+            deleteBookmark(_tmpFile.name, null);
+        });
+    });
+
     // 북마크 삭제 이벤트 : 북마크 x 표시 클릭
     document.getElementById('bookmarkList').addEventListener('click', function(evt) {
         if (evt.target.innerText == "X") {
@@ -208,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 페이지 이동 방향키 바인드
+    // 자체 키 설정 적용
     window.onkeydown = function(evt) {
         // 좌/우 키로 페이지 이동
         if (evt.key == "ArrowLeft") {
@@ -228,6 +238,11 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             document.getElementById('btnBookmark').click();
         }
+        // 북마크 목록창 숨기기
+        else if (evt.key == "Escape") {
+            event.preventDefault();
+            closeBookmarkBox();
+        }
     };
 
     // TODO: 검색 기능 window.find()?
@@ -238,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * 북마크 새로고침
- * @param {string}} fileName 
+ * @param {string} fileName 
  */
 function refreshBookmarkList(fileName) {
     whale.storage.sync.get([fileName], function(result) {
@@ -268,7 +283,7 @@ function refreshBookmarkList(fileName) {
 }
 
 /**
- * 북마크 개별 삭제
+ * 북마크 개별 삭제 (key가 null일 경우 전체 삭제)
  * @param {string} fileName 북마크 저장된 파일명
  * @param {string} key 북마크키
  */
@@ -279,8 +294,14 @@ function deleteBookmark(fileName, key) {
         if (!updateValue) {
             updateValue = {};
         }
-        // 선택한 북마크 삭제
-        delete updateValue[key];
+
+        // key가 null일 경우 전체 삭제
+        if (key == null) {
+            updateValue = {};
+        } else {
+            // 선택한 북마크 삭제
+            delete updateValue[key];
+        }
 
         // 새로운 값 저장
         whale.storage.sync.set({ [fileName]:updateValue }, function() {
@@ -403,6 +424,74 @@ function clickPromptCancel(callback) {
  */
 function closePrompt() {
     var x = document.getElementById("prompt");
+    // Add the "show" class to DIV
+    x.className = x.className.replace("show", "hide");
+    setTimeout(function(){ x.className = x.className.replace("hide", ""); }, 500);
+}
+
+/**
+ * show confirm dialog
+ * @param {string} msg 
+ * @param {function} callback (input) returns false when canceled
+ */
+function confirmMessage(msg, callback) {
+    // 기존 버튼 클릭 이벤트 해제
+    document.getElementById("confirmOk").removeEventListener('click', clickConfirmOk);
+    document.getElementById("confirmCancel").removeEventListener('click', clickConfirmCancel);
+
+    // Get the confirm DIV
+    var x = document.getElementById("confirm");
+    document.getElementById('confirmMsg').innerText = msg;
+
+    // Add the "show" class to DIV
+    x.className = "show";
+
+    // 프롬프트 버튼 이벤트
+    document.getElementById("confirmOk").addEventListener('click', function() {
+        clickConfirmOk(callback);
+    });
+    document.getElementById("confirmCancel").addEventListener('click', function() {
+        clickConfirmCancel(callback);
+    });
+
+    // 확인 버튼에 포커스
+    document.getElementById('confirmOk').focus();
+}
+/**
+ * 컨펌 확인 이벤트 핸들러
+ */
+function clickConfirmOk(callback) {
+    closeConfirm();
+    if(typeof callback != 'undefined' && callback){
+        if(typeof callback == 'function'){
+            callback(true);
+        } else {
+            if( callback ) {
+                eval( callback );
+            }
+        }
+    }
+}
+/**
+ * 컨펌 취소 이벤트 핸들러
+ */
+function clickConfirmCancel(callback) {
+    closeConfirm();
+    if(typeof callback != 'undefined' && callback){
+        if(typeof callback == 'function'){
+            callback(false); // 취소일 경우 false 반환
+        } else {
+            if( callback ) {
+                eval( callback );
+            }
+        }
+    }
+}
+/**
+ * 컨펌 닫기
+ */
+function closeConfirm() {
+    var x = document.getElementById("confirm");
     // Add the "show" class to DIV
     x.className = x.className.replace("show", "hide");
     setTimeout(function(){ x.className = x.className.replace("hide", ""); }, 500);

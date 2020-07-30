@@ -27,7 +27,7 @@
         <div id="bookmarkBox" class="bookmark-box hide">
             <div class="bookmark-title no-drag">
                 <h3 class="font-primary inline"> 북마크 <span id="btnBookmarkClose" class="font-bold cursor-click font-hover">X</span></h3>
-                <input type="button" class="btn btn-primary fixed-right pr10" value="전체 비우기">
+                <input type="button" id="btnClearBookmark" class="btn btn-primary fixed-right pr10" value="전체 비우기">
             </div>
             <div class="bookmark-content">
                 <ul id="bookmarkList" class="ul0 font-black">
@@ -45,9 +45,15 @@
                 <input id="promptInput" type="text"/>
             </div>
             <div>
-                <input id="promptIsCancel" type="hidden"/>
                 <input id="promptOk" class="btn btn-primary" type="button" value="OK"/>
                 <input id="promptCancel" class="btn btn-gray" type="button" value="Cancel"/>
+            </div>
+        </div>
+        <div id="confirm">
+            <div id="confirmMsg"></div>
+            <div>
+                <input id="confirmOk" class="btn btn-primary" type="button" value="OK"/>
+                <input id="confirmCancel" class="btn btn-gray" type="button" value="Cancel"/>
             </div>
         </div>
         <div id="snackbar"></div>
