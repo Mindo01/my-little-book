@@ -2,7 +2,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>읽어주기</title>
+        <title>나의 작은 책</title>
         <script src="./sidebar.js" type="text/javascript"></script>
         <link rel="stylesheet" type="text/css" href="./sidebar.css"/>
     </head>
@@ -24,9 +24,10 @@
                 </span>
             </div>
         </nav>
-        <div id="bookmarkBox" class="bookmark-box">
+        <div id="bookmarkBox" class="bookmark-box hide">
             <div class="bookmark-title no-drag">
-                <h3 class="font-primary"> 북마크 <span id="btnBookmarkClose" class="font-bold cursor-click font-hover">X</span></h3>
+                <h3 class="font-primary inline"> 북마크 <span id="btnBookmarkClose" class="font-bold cursor-click font-hover">X</span></h3>
+                <input type="button" class="btn btn-primary fixed-right pr10" value="전체 비우기">
             </div>
             <div class="bookmark-content">
                 <ul id="bookmarkList" class="ul0 font-black">

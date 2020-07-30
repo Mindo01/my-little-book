@@ -57,7 +57,6 @@ function openTextFile() {
  * @param {*} file 
  */
 function processFile(file) {
-    console.log(file);
     var reader = new FileReader();
     reader.onload = function () {
         // 스크롤 초기화
@@ -68,6 +67,8 @@ function processFile(file) {
     // TODO: 파일 인코딩 문제 default: utf-8 / euc-kr
     reader.readAsText(file, /* optional */ "euc-kr");
 }
+
+// TODO: 앱 종료될 때 현재 파일의 마지막 위치를 시간으로 북마크 저장해주기
 
 document.addEventListener('DOMContentLoaded', function() {
     // 파일 열기 버튼
@@ -155,6 +156,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 현재 파일(_tmpFile)로 localStorage에 저장된 목록 중 해당 파일의 북마크 목록만 불러오기
         refreshBookmarkList(_tmpFile.name);
+        
+        // 사이드바로 북마크 목록 표시
+        openBookmarkBox();
 
         // TODO: 단, 필터로 처리해서 전체 북마크 목록 불러오는 형식 / 필터를 변경하면 전체 목록도 볼 수 있도록
 
@@ -166,6 +170,15 @@ document.addEventListener('DOMContentLoaded', function() {
         var scrollY = mark.getAttribute('data-scroll');
         // 스크롤 위치 이동
         document.body.scrollTop = scrollY;
+    });
+
+    // 북마크 삭제 이벤트 : 북마크 x 표시 클릭
+    document.getElementById('bookmarkList').addEventListener('click', function(evt) {
+        if (evt.target.innerText == "X") {
+            // close button clicked
+            var mark = evt.target.getAttribute('data-mark');
+            deleteBookmark(_tmpFile.name, mark);
+        }
     });
 
     // 북마크 삭제 이벤트 : 북마크 우클릭
@@ -187,8 +200,16 @@ document.addEventListener('DOMContentLoaded', function() {
         closeBookmarkBox();
     });
 
+    // 프롬프트 입력칸에서 엔터로 확인 버튼 대체 가능
+    document.getElementById('promptInput').addEventListener('keyup', function(evt) {
+        if (evt.key == "Enter") {
+            evt.preventDefault();
+            document.getElementById('promptOk').click();
+        }
+    });
+
     // 페이지 이동 방향키 바인드
-    window.onkeyup = function(evt) {
+    window.onkeydown = function(evt) {
         // 좌/우 키로 페이지 이동
         if (evt.key == "ArrowLeft") {
             // page up
@@ -201,6 +222,11 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             // 스크롤 위치 아래 페이지로 (window height - header height - 여백)
             document.body.scrollTop = document.body.scrollTop + (document.body.clientHeight - document.getElementById('navbar_main').clientHeight - 10);
+        }
+        // 북마크 저장 기능
+        else if (evt.key == "s" && evt.ctrlKey) {
+            event.preventDefault();
+            document.getElementById('btnBookmark').click();
         }
     };
 
@@ -238,9 +264,6 @@ function refreshBookmarkList(fileName) {
             bookmark.appendChild(close);
             bookmarkTag.appendChild(bookmark);
         });
-        
-        // 사이드바로 북마크 목록 표시
-        openBookmarkBox();
     });
 }
 
@@ -279,8 +302,10 @@ function isBookmarkBoxOpen() {
  */
 function openBookmarkBox() {
     // FIXME: 열 때 북마크별 닫기 버튼이 먼저 떠
-    document.getElementById("bookmarkBox").style.display = "block";
-    document.getElementById("bookmarkBox").style.width = "300px";
+    var x = document.getElementById("bookmarkBox");
+    x.className = x.className.replace("hide", "");
+    // document.getElementById("bookmarkBox").style.display = "block";
+    x.style.width = "300px";
     // setTimeout(function(){ document.getElementById("bookmarkBox").style.width = "300px"; }, 500);
     // setTimeout(function(){ document.getElementById("bookmarkBox").style.display = "block"; }, 100);
 }
@@ -291,9 +316,11 @@ function openBookmarkBox() {
  */
 function closeBookmarkBox() {
     // FIXME: 닫을 때 북마크별 닫기 버튼이 늦게 사라져
-    document.getElementById("bookmarkBox").style.width = "0px";
+    var x = document.getElementById("bookmarkBox");
+    x.className = " bookmark-box hide";
+    x.style.width = "0px";
     // document.getElementById("bookmarkBox").style.display = "none";
-    setTimeout(function(){ document.getElementById("bookmarkBox").style.display = "none"; }, 400);
+    // setTimeout(function(){ document.getElementById("bookmarkBox").style.display = "none"; }, 400);
 }
 
 /**
@@ -315,6 +342,7 @@ function showMessage(msg) {
 /**
  * show prompt msg
  * @param {string} msg 
+ * @param {function} callback(input) returns null when canceled
  */
 function promptMessage(msg, callback) {
     // 기존 버튼 클릭 이벤트 해제
@@ -329,9 +357,6 @@ function promptMessage(msg, callback) {
     // Add the "show" class to DIV
     x.className = "show";
 
-    // 입력칸에 포커스
-    document.getElementById('promptMsg').focus();
-
     // 프롬프트 버튼 이벤트
     document.getElementById("promptOk").addEventListener('click', function() {
         clickPromptOk(callback);
@@ -339,6 +364,9 @@ function promptMessage(msg, callback) {
     document.getElementById("promptCancel").addEventListener('click', function() {
         clickPromptCancel(callback);
     });
+
+    // 입력칸에 포커스
+    document.getElementById('promptInput').focus();
 }
 /**
  * 프롬프트 확인 이벤트 핸들러
@@ -380,3 +408,12 @@ function closePrompt() {
     setTimeout(function(){ x.className = x.className.replace("hide", ""); }, 500);
 }
 
+/**
+ * 앱 닫힐 때 이벤트 등록
+ */
+whale.runtime.onSuspend.addListener(() => {
+    // onSuspend : before it is unloaded
+    if (_tmpFile != undefined) {
+        document.getElementById('btnBookmark').click();
+    }
+});

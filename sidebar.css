@@ -79,7 +79,7 @@ div {
     background-color: white;
     overflow-x: hidden;
     transition: 0.5s;
-    padding: 30 0 20 0;
+    padding: 60 0 20 0;
     border-left: 1px solid #c3c3c3;
 }
 .bookmark-title {
@@ -183,7 +183,15 @@ div {
     right: 0;
     padding-right: 1rem;
 }
+.fixed-right.pr10{
+    right: 10px;
+}
+.bookmark-box.hide .fixed-right {
+    position: relative;
+    transition: 0.3s;
+}
 
+.inline { display: inline; }
 .h1 { font-size: 2em; }
 .h2 { font-size: 1.5em; }
 .h3 { font-size: 1.17em; }
@@ -208,7 +216,17 @@ div {
 .tag-hover:hover {
     background-color: var(--secondary);
 }
-
+.round-box {
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 5px;
+}
+.round-box.border-primary {
+    border-color: var(--primary);
+}
+.round-box.border-secondary {
+    border-color: var(--secondary);
+}
 .read-container {
     font-family: 'ffNoto';
     padding-left: 30px;
